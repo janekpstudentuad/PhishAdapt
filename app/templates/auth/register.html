@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% if title %}
+        <title>{{ title }} - PhishAdapt</title>
+        {% else %}
+        <title>Welcome to PhishAdapt</title>
+        {% endif %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body>
+        <div class="center-container">
+            <img src="{{ url_for('static', filename='images/PhishAdapt logo (transparent).png')}}"><br>
+            <h1 class=>Register</h1>
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.username.label }}
+                    {{ form.username(size=32) }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.firstname.label }}
+                    {{ form.firstname(size=32) }}<br>
+                    {% for error in form.firstname.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.lastname.label }}
+                    {{ form.lastname(size=32) }}<br>
+                    {% for error in form.lastname.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.email.label }}
+                    {{ form.email(size=32) }}<br>
+                    {% for error in form.email.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.jobtitle.label }}
+                    {{ form.jobtitle(size=32) }}<br>
+                    {% for error in form.jobtitle.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.team.label }}
+                    {{ form.team(size=32) }}<br>
+                    {% for error in form.team.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.department.label }}
+                    {{ form.department(size=32) }}<br>
+                    {% for error in form.department.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.password.label }}
+                    {{ form.password(size=32) }}<br>
+                    {% for error in form.password.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.password2.label }}
+                    {{ form.password2(size=32) }}<br>
+                    {% for error in form.password2.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>{{ form.submit() }}</p>
+            </form>
+        </div>
+    </body>
+</html>

@@ -10,7 +10,7 @@
         {% endif %}
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     </head>
-    <body class="loginpage">
+    <body>
         <div class="center-container">
             <img src="{{ url_for('static', filename='images/PhishAdapt logo (transparent).png')}}"><br>
             <h1 class=>Please log in:</h1>
@@ -33,6 +33,7 @@
                 <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
                 <p>{{ form.submit() }}</p>
             </form>
+            <p>New User? <a href="{{ url_for('auth.register') }}">Click to Register!</a></p>
         </div>
     </body>
 </html>
