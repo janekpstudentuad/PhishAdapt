@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% if title %}
+        <title>{{ title }} - PhishAdapt</title>
+        {% else %}
+        <title>Welcome to PhishAdapt</title>
+        {% endif %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+    <body class="loginpage">
+        <div class="center-container">
+            <img src="{{ url_for('static', filename='images/PhishAdapt logo (transparent).png')}}"><br>
+            <h1 class=>Please log in:</h1>
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.username.label }}<br>
+                    {{ form.username(size=32) }}<br>
+                    {% for error in form.username.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.password.label }}<br>
+                    {{ form.password(size=32) }}<br>
+                    {% for error in form.password.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+                <p>{{ form.submit() }}</p>
+            </form>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+body {
+    background-color: #FFFDD0;
+}
+
+.center-container {
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    font-family: Helvetica, Verdana, san-serif;
+    color: #12355B;
+}
+
+.center-container  img {
+    max-width: 30%;
+    max-height: 30%;
+}
