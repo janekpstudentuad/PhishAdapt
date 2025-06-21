@@ -1,1 +1,2 @@
 FLASK_APP=phishadapt.py
+FLASK_DEBUG=1
