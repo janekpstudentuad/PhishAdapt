@@ -1,6 +1,6 @@
 body {
     background-color: #FFFDD0;
-        font-family: Helvetica, Verdana, san-serif;
+    font-family: Helvetica, Verdana, san-serif;
     color: #12355B;
 }
 
@@ -13,4 +13,8 @@ body {
 .center-container  img {
     max-width: 30%;
     max-height: 30%;
+}
+
+.accessdenied {
+    color: red;
 }
