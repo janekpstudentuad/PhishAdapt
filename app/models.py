@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
     team: so.Mapped[str] = so.mapped_column(sa.String(32), index=True)
     department: so.Mapped[str] = so.mapped_column(sa.String(32), index=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
+    is_admin: so.Mapped[bool] = so.mapped_column(sa.Boolean)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

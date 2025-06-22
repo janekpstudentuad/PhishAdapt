@@ -1,6 +1,6 @@
 from app.auth import bp
 from flask import render_template, flash, redirect, url_for, request
-from app.auth.forms import LoginForm, RegistrationForm
+from app.auth.forms import LoginForm
 from flask_login import current_user, login_user, logout_user
 import sqlalchemy as sa
 from app import db
@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return "Login successful - redirect to profile page."
+        return "Login successful - redirect to profile page." # Need to update this to user profile page
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(
@@ -29,18 +29,3 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
-
-
-@bp.route('/register', methods=['GET', 'POST'])
-def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('auth.login')) # Need to update this to user profile page
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data) # Need to update this to include the rest of the form fields!
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
-    return render_template('auth/register.html', title='Register', form=form)

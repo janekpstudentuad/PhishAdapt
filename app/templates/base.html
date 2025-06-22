@@ -13,8 +13,11 @@
     <body>
         <div>
             PhishAdapt:
+            {% if current_user.is_admin %}
+             <a href="{{ url_for('admin.console') }}">Admin console</a>
+             {% endif %}
             <a href="{{ url_for('auth.logout') }}">Logout</a>
-        </div>>
+        </div>
         <hr>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
