@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if not user == current_user %}
+    <h1>Access denied!</h1>
+{% else %}
+    <h1>Welcome {{ user.firstname }}</h1>
+    <table>
+        <tr valign="top">
+            <td><img src="{{ user.avatar(128) }}"></td>
+        </tr>
+        <tr>
+            <td><p>Username: {{ user.username }}</p></td>
+        </tr>
+        <tr>
+            <td><p>Name: {{user.firstname }} {{ user.lastname }}</p></td>
+        </tr>
+        <tr>
+            <td><p>Job title: {{user.jobtitle }}</p></td>
+        </tr>
+        <tr>
+            <td><p>Team: {{user.team }}</p></td>
+        </tr>
+        <tr>
+            <td><p>Department: {{user.department }}</p></td>
+        </tr>
+        <tr>
+            <td><p>Email address: {{user.email }}</p></td>
+        </tr>
+    </table>
+    <a href="{{ url_for('main.edit_profile', username=user.username) }}">Edit profile</a>
+{% endif %}
+{% endblock %}

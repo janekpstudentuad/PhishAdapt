@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return "Login successful - redirect to profile page." # Need to update this to user profile page
+        return redirect(url_for('main.user', username=current_user.username))
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(
@@ -21,7 +21,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or urlsplit(next_page).netloc != '':
-            next_page = url_for('auth.login') # Need to update this to user profile page
+            next_page = url_for('main.user', username=user.username)
         return redirect(next_page)
     return render_template('auth/login.html', title='Sign In', form=form)
 
