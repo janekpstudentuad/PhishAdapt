@@ -49,5 +49,10 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return db.session.get(User, int(id))
 
-class Profile(db.model):
-    pass
+class Organisation(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    department: so.Mapped[str] = so.mapped_column(sa.String(64), index=True)
+    team: so.Mapped[str] = so.mapped_column(sa.String(64), index=True)
+
+# class Profile(db.Model):
+#     id: so.Mapped[int] = so.mapped_column(primary_key=True)

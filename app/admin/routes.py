@@ -4,7 +4,7 @@ from app.admin.forms import RegistrationForm
 from flask_login import current_user, login_required
 import sqlalchemy as sa
 from app import db
-from app.models import User
+from app.models import User, Organisation
 
 @bp.route('/console')
 @login_required
@@ -15,6 +15,10 @@ def console():
 @login_required
 def register():
     form = RegistrationForm()
+    departments = db.session.query(Organisation.department).distinct().all()
+    form.department.choices = [(dept.department, dept.department) for dept in departments]
+    teams = db.session.query(Organisation.team).distinct().all()
+    form.team.choices = [(team.team, team.team) for team in teams]
     if form.validate_on_submit():
         user = User(
             username=form.username.data, 

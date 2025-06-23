@@ -44,14 +44,14 @@
         </p>
         <p>
             {{ form.team.label }}
-            {{ form.team(size=32) }}<br>
+            {{ form.team }}<br>
             {% for error in form.team.errors %}
             <span style="color:red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
             {{ form.department.label }}
-            {{ form.department(size=32) }}<br>
+            {{ form.department }}<br>
             {% for error in form.department.errors %}
             <span style="color:red;">[{{ error }}]</span>
             {% endfor %}
