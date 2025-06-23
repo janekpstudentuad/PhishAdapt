@@ -3,3 +3,4 @@ venv
 *.log
 pip-log.txt
 app.db
+migrations/
