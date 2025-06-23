@@ -24,4 +24,25 @@ To get latest repo onto PhishAdapt machine:
 
 `db.session.add(u)`
 
+```
+rows = [
+    {"department": "Executive Leadership", "team": "CEO"},
+    {"department": "Internal Services", "team": "HR"},
+    {"department": "Internal Services", "team": "Finance & Accounting"},
+    {"department": "Internal Services", "team": "IT"},
+    {"department": "Internal Services", "team": "Legal & Compliance"},
+    {"department": "Internal Services", "team": "Administration/Facilities"},
+    {"department": "External-Facing Services", "team": "Sales & Business Development"},
+    {"department": "External-Facing Services", "team": "Marketing & Communications"},
+    {"department": "External-Facing Services", "team": "Customer Services / Support"},
+    {"department": "External-Facing Services", "team": "Product/Service Delivery"},
+    {"department": "Strategy & Innovation", "team": "Strategy and Planning"},
+    {"department": "Strategy & Innovation", "team": "Innovation & R&D"},
+]
+```
+
+`for row in rows:`
+    `r=Organisation(**row)`
+    `db.session.add(r)`
+
 `db.session.commit()`

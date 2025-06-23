@@ -8,6 +8,7 @@ from hashlib import md5
 from time import time
 import jwt
 from flask import current_app
+from sqlalchemy import CheckConstraint
 
 class User(UserMixin, db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
@@ -54,5 +55,22 @@ class Organisation(db.Model):
     department: so.Mapped[str] = so.mapped_column(sa.String(64), index=True)
     team: so.Mapped[str] = so.mapped_column(sa.String(64), index=True)
 
-# class Profile(db.Model):
-#     id: so.Mapped[int] = so.mapped_column(primary_key=True)
+class Profile(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    instructor: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    group: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    game: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    elearn: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    quiz: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    demo: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    video: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    text: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    visual: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    coach: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    audio: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    risk: so.Mapped[int] = so.mapped_column(sa.Integer)
+
+    __table_args__ = (
+        CheckConstraint('risk >= 0 AND risk <= 100', name='check_risk_range'),
+    )

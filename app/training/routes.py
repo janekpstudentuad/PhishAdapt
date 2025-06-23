@@ -2,7 +2,7 @@ from flask import render_template
 from flask_login import login_required
 from app.training import bp
 
-@bp.route('/catalog')
+@bp.route('/content')
 @login_required
-def catalog():
-    return render_template('training/catalog.html', title="Training catalog")
+def content():
+    return render_template('training/content.html', title="Training content")
