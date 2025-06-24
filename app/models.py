@@ -69,19 +69,19 @@ class Organisation(db.Model):
 class Profile(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True, unique=True)
-    instructor: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    group: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    game: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    elearn: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    quiz: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    demo: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    video: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    text: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    visual: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    coach: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    audio: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-    risk: so.Mapped[int] = so.mapped_column(sa.Integer)
+    instructor: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    group: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    game: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    elearn: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    quiz: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    demo: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    video: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    text: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    visual: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    coach: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    audio: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
+    risk: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=True)
 
-    __table_args__ = (
-        CheckConstraint('risk >= 0 AND risk <= 100', name='check_risk_range'),
-    )
+    # __table_args__ = (
+    #     CheckConstraint('risk >= 0 AND risk <= 100', name='check_risk_range'),
+    # )

@@ -1,5 +1,74 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Coming soon!</h1>
+    <h1>We're sorry to tell you this but...</h1>
+    <p><strong>That email was a phish.</strong></p>
+    <p>
+        It seems like our existing training has not been successful in communicating the risks that phishing emails can pose, not just to us as a business but also to individuals.
+    </p>
+    <p>
+        We are committed to improving the skills our employees have in this area to make our cyber space safer. 
+    </p>
+    <p>
+        We would like to offer some training that could help. Please could you let us know which of the following you would find most useful:
+    </p>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <h2>Instructor-led training</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.instructor() }}<br>
+        </p>
+        <h2>Group-based training</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.group() }}<br>
+        </p>
+        <h2>Gaming</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.game() }}<br>
+        </p>
+        <h2>e-Learning</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.elearn() }}<br>
+        </p>
+        <h2>Quizzing</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.quiz() }}<br>
+        </p>
+        <h2>Demos</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.demo() }}<br>
+        </p>
+        <h2>Videos</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.video() }}<br>
+        </p>
+        <h2>Articles</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.text() }}<br>
+        </p>
+        <h2>Visual training</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.visual() }}<br>
+        </p>
+        <h2>Coaching</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.coach() }}<br>
+        </p>
+        <h2>Audio training</h2>
+        <p>Some stuff here</p>
+        <p>
+            {{ form.audio() }}<br>
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form> 
 {% endblock %}
