@@ -41,8 +41,10 @@ rows = [
 ]
 ```
 
-`for row in rows:`
-    `r=Organisation(**row)`
-    `db.session.add(r)`
+```
+for row in rows:
+    r=Organisation(**row)
+    db.session.add(r)
 
-`db.session.commit()`
+db.session.commit()
+```

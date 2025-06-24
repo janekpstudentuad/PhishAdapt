@@ -57,7 +57,7 @@ class Organisation(db.Model):
 
 class Profile(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True, unique=True)
     instructor: so.Mapped[bool] = so.mapped_column(sa.Boolean)
     group: so.Mapped[bool] = so.mapped_column(sa.Boolean)
     game: so.Mapped[bool] = so.mapped_column(sa.Boolean)

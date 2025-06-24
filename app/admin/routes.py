@@ -1,5 +1,5 @@
 from app.admin import bp
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, abort
 from app.admin.forms import RegistrationForm
 from flask_login import current_user, login_required
 import sqlalchemy as sa
@@ -9,11 +9,15 @@ from app.models import User, Organisation
 @bp.route('/console')
 @login_required
 def console():
+    if not current_user.is_admin:
+        abort(403)
     return render_template('admin/console.html', title='Admin console')
 
 @bp.route('/register', methods=['GET', 'POST'])
 @login_required
 def register():
+    if not current_user.is_admin:
+        abort(403)
     form = RegistrationForm()
     departments = db.session.query(Organisation.department).distinct().all()
     form.department.choices = [(dept.department, dept.department) for dept in departments]
@@ -36,3 +40,24 @@ def register():
         flash(f'{username} is now a registered user.')
         return redirect(url_for('admin.console'))
     return render_template('admin/register.html', title='Register', form=form)
+
+@bp.route('/campaigns')
+@login_required
+def campaigns():
+    if not current_user.is_admin:
+        abort(403)
+    return render_template('admin/campaigns.html', title='Training Campaigns')
+
+@bp.route('/campaigns/baselines')
+@login_required
+def baselines():
+    if not current_user.is_admin:
+        abort(403)
+    return render_template('admin/baselines.html', title='Baseline Training Campaigns')
+
+@bp.route('/campaigns/baselines/voicemail')
+@login_required
+def baseline_voicemail():
+    if not current_user.is_admin:
+        abort(403)
+    return render_template('admin/baseline_voicemail.html', title='Baseline Voicemail Campaign')

@@ -1,10 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% if not current_user.is_admin %}
-    <h1 class="accessdenied">Access denied!</h1>
-    {% else %}
     <h1>Admin console</h1>
-    <a href="{{ url_for('admin.register') }}">Register new user</a>
-    {% endif %}
+    <a href="{{ url_for('admin.register') }}">Register new user</a><br>
+    <a href="{{ url_for('admin.campaigns') }}">Training campaigns</a>
 {% endblock %}

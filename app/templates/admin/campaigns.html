@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Training campaigns</h1>
+    <a href="{{ url_for('admin.baselines') }}">Baseline Training campaigns</a>
+    <p>Use a baseline training campaign if you want to send a phishing simulation to all PhishAdapt users.</p><br>
+    <h2>Targeted training campaigns - Coming soon!</h2>
+    <p>Use a targeted training campaign if you only want to send a phishing simulation to some groups of PhishAdapt users.</p>
+
+{% endblock %}

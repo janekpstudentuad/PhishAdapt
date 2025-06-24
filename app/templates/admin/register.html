@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% if not current_user.is_admin %}
-    <h1 class="accessdenied">Access denied!</h1>
-    {% else %}
     <h1 class=>Register new user</h1>
     <form action="" method="post">
         {{ form.hidden_tag() }}
@@ -79,5 +76,4 @@
         </p>
         <p>{{ form.submit() }}</p>
     </form>
-{% endif %}
 {% endblock %}
