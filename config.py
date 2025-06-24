@@ -6,7 +6,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
     # MAIL_SERVER = os.environ.get('MAIL_SERVER') << this is what it SHOULD be
     MAIL_SERVER = 'localhost' # << this is what WORKS
-    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
+    # MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
+    MAIL_PORT = 8025
     # MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None << this is what it SHOULD be
     MAIL_USE_TLS = False # << this is what WORKS
     # MAIL_USERNAME = os.environ.get('MAIL_USERNAME') << this is what it SHOULD be

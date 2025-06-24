@@ -45,6 +45,17 @@ class User(UserMixin, db.Model):
         except:
             return
         return db.session.get(User, id)
+    
+    def get_training_token(self, expires_in=604800):
+        return jwt.encode({'clicked': self.id, 'exp': time() + expires_in}, current_app.config['SECRET_KEY'], algorithm='HS256')
+    
+    @staticmethod
+    def verify_training_token(token):
+        try:
+            id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['clicked']
+        except:
+            return
+        return db.session.get(User, id)
 
 @login.user_loader
 def load_user(id):

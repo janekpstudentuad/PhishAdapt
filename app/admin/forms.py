@@ -17,3 +17,6 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     isadmin = BooleanField('Admin?')
     submit = SubmitField('Register')
+
+class BaselineCampaign(FlaskForm):
+    send = SubmitField('Send Campaign!')

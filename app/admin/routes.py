@@ -1,10 +1,11 @@
 from app.admin import bp
 from flask import render_template, flash, redirect, url_for, abort
-from app.admin.forms import RegistrationForm
+from app.admin.forms import RegistrationForm, BaselineCampaign
 from flask_login import current_user, login_required
 import sqlalchemy as sa
 from app import db
 from app.models import User, Organisation
+from app.admin.email import send_baseline_voicemail
 
 @bp.route('/console')
 @login_required
@@ -55,9 +56,16 @@ def baselines():
         abort(403)
     return render_template('admin/baselines.html', title='Baseline Training Campaigns')
 
-@bp.route('/campaigns/baselines/voicemail')
+@bp.route('/campaigns/baselines/voicemail', methods=['GET', 'POST'])
 @login_required
 def baseline_voicemail():
     if not current_user.is_admin:
         abort(403)
-    return render_template('admin/baseline_voicemail.html', title='Baseline Voicemail Campaign')
+    form = BaselineCampaign()
+    if form.validate_on_submit():
+        users = db.session.query(User).all()
+        for user in users:
+            send_baseline_voicemail(user)
+        flash('Baseline voicemail campagn has been sent to all users!')
+        return redirect(url_for('admin.console'))
+    return render_template('admin/baseline_voicemail.html', title='Baseline Voicemail Campaign', form=form)

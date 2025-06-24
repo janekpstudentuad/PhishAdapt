@@ -2,8 +2,11 @@
 <html>
     <body>
         <p>Dear {{user.firstname }},</p>
-        <p>
-            To reset your password <a href="{{ url_for('auth.reset_password', token=token, _external=True) }}">click here.</a>
-        </p>
+        <p><strong>New Message from 311-152-3414</strong></p><br>
+        <p>Attention: <a href="{{ url_for('training.clicked', token=token, _external=True) }}">___*****@*****.t.msc</a></p><br>
+        <p>Caller-ID ; 311-152-3414</p>
+        <p>Length : 01:15 Min</p>
+        <p>Reception : Voice Message Service</p><br>
+        <p>Click the above link to listen to your voice message</p>
     </body>
 </html>
