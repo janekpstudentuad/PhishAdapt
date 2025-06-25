@@ -1,11 +1,11 @@
 from app.admin import bp
 from flask import render_template, flash, redirect, url_for, abort
-from app.admin.forms import RegistrationForm, BaselineCampaign
+from app.admin.forms import RegistrationForm, BaselineCampaign, DepartmentalGroups
 from flask_login import current_user, login_required
 import sqlalchemy as sa
 from app import db
 from app.models import User, Organisation
-from app.admin.email import send_baseline_voicemail
+from app.admin.email import send_voicemail
 
 @bp.route('/console')
 @login_required
@@ -65,7 +65,31 @@ def baseline_voicemail():
     if form.validate_on_submit():
         users = db.session.query(User).all()
         for user in users:
-            send_baseline_voicemail(user)
+            send_voicemail(user)
         flash('Baseline voicemail campagn has been sent to all users!')
         return redirect(url_for('admin.console'))
     return render_template('admin/baseline_voicemail.html', title='Baseline Voicemail Campaign', form=form)
+
+@bp.route('/campaigns/targeted_campaigns')
+@login_required
+def targeted_campaigns():
+    if not current_user.is_admin:
+        abort(403)
+    return render_template('admin/targeted_campaigns.html', title='Targeted Training Campaigns')
+
+@bp.route('/campaigns/target_campaigns/group_voicemail', methods=['GET', 'POST'])
+@login_required
+def group_voicemail():
+    if not current_user.is_admin:
+        abort(403)
+    form = DepartmentalGroups()
+    departments = db.session.query(Organisation.department).distinct().all()
+    form.department.choices = [(dept.department, dept.department) for dept in departments]
+    if form.validate_on_submit():
+        department = form.department.data
+        users = db.session.query(User).where(User.department == department).all()
+        for user in users:
+            send_voicemail(user)
+        flash(f'Baseline voicemail campagn has been sent to all users in {department}!')
+        return redirect(url_for('admin.console'))
+    return render_template('admin/group_voicemail.html', title='Voicemail Phishing Campaign for Departmental Groups', form=form)

@@ -17,3 +17,7 @@ class RegistrationForm(FlaskForm):
 
 class BaselineCampaign(FlaskForm):
     send = SubmitField('Send Campaign!')
+
+class DepartmentalGroups(FlaskForm):
+    department = SelectField(choices = [], validators=[DataRequired()])
+    send = SubmitField('Send Campaign!')
