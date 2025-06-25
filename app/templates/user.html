@@ -7,7 +7,7 @@
     <h1>Welcome {{ user.firstname }}</h1>
     <table>
         <tr valign="top">
-            <td><img src="{{ user.avatar(128) }}"></td>
+            <td><img src="data:image/png;base64,{{ gauge_image }}" alt="Risk Gauge", style="width:100%; max-width:400px;"></td>
         </tr>
         <tr>
             <td><p>Username: {{ user.username }}</p></td>

@@ -5,6 +5,12 @@ from app import db
 import sqlalchemy as sa
 from app.models import User, Profile
 from app.main.forms import EditProfileForm, EditTrainingPreferences
+import io
+import base64
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
 @bp.route('/')
 @bp.route('/index')
@@ -16,7 +22,29 @@ def index():
 def user(username):
     user = db.first_or_404(sa.select(User).where(User.username == username))
     profile = db.session.scalar(sa.select(Profile).where(Profile.user_id == user.id))
-    return render_template('user.html', user=user, profile=profile, title='User Profile')
+    risk = profile.risk if profile and profile.risk is not None else 0
+
+    fig, ax = plt.subplots(figsize=(5, 1.2))
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 1)
+    ax.axis('off')
+
+    ax.add_patch(Rectangle((0, 0), 40, 1, color = 'green'))
+    ax.add_patch(Rectangle((40, 0), 30, 1, color = 'orange'))
+    ax.add_patch(Rectangle((70, 0), 30, 1, color = 'red'))
+
+    ax.plot([risk, risk], [0, 1], color='black', linewidth=5)
+
+    ax.text(50, 1.1, f'Risk score: {risk}', ha='center', fontsize=12, fontweight='bold')
+
+    buf = io.BytesIO()
+    plt.tight_layout()
+    plt.savefig(buf, format='png', transparent=True, dpi=100, bbox_inches='tight')
+    buf.seek(0)
+    gauge_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    plt.close(fig)
+
+    return render_template('user.html', user=user, profile=profile, title='User Profile', gauge_image=gauge_base64)
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
@@ -39,7 +67,7 @@ def edit_training_preferences():
     form = EditTrainingPreferences()
     profile = Profile.query.filter_by(user_id=current_user.id).first()
     if not profile:
-        profile = Profile(user_id=user.id)
+        profile = Profile(user_id=current_user.id)
         db.session.add(profile)
         db.session.commit()
     if form.validate_on_submit():
