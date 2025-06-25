@@ -18,3 +18,19 @@ body {
 .accessdenied {
     color: red;
 }
+
+#user_table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#user_table th,
+#user_table td {
+    border: 1px solid black;
+    padding: 8px;
+}
+
+#user_table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}

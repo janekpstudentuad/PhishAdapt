@@ -1,11 +1,12 @@
 from app.admin import bp
 from flask import render_template, flash, redirect, url_for, abort
-from app.admin.forms import RegistrationForm, BaselineCampaign, DepartmentalGroups
+from app.admin.forms import RegistrationForm, BaselineCampaign, DepartmentalGroups, RiskGroups
 from flask_login import current_user, login_required
 import sqlalchemy as sa
 from app import db
-from app.models import User, Organisation
+from app.models import User, Organisation, Profile
 from app.admin.email import send_voicemail
+import operator
 
 @bp.route('/console')
 @login_required
@@ -36,6 +37,9 @@ def register():
             is_admin=form.isadmin.data)
         user.set_password(form.password.data)
         db.session.add(user)
+        db.session.commit()
+        profile = Profile(user_id=user.id, risk=0)
+        db.session.add(profile)
         db.session.commit()
         username = form.username.data
         flash(f'{username} is now a registered user.')
@@ -90,6 +94,40 @@ def group_voicemail():
         users = db.session.query(User).where(User.department == department).all()
         for user in users:
             send_voicemail(user)
-        flash(f'Baseline voicemail campagn has been sent to all users in {department}!')
+        flash(f'Targeted voicemail campagn has been sent to all users in {department}!')
         return redirect(url_for('admin.console'))
     return render_template('admin/group_voicemail.html', title='Voicemail Phishing Campaign for Departmental Groups', form=form)
+
+@bp.route('/campaigns/target_campaigns/risk_voicemail', methods=['GET', 'POST'])
+@login_required
+def risk_voicemail():
+    if not current_user.is_admin:
+        abort(403)
+    form=RiskGroups()
+    form.operator.choices = [('>', '>'), ('>=', '>='), ('<', '<'), ('<=', '<='), ('==', '==')]
+    if form.validate_on_submit():
+        op_map = {
+            '>': operator.gt,
+            '>=': operator.ge,
+            '<': operator.lt,
+            '<=': operator.le,
+            '==': operator.eq
+        }
+
+        op_func = op_map[form.operator.data]
+        score = form.score.data
+        
+        users = db.session.query(User).join(Profile).filter(op_func(Profile.risk, score)).all()
+        for user in users:
+            send_voicemail(user)
+        flash(f'Targeted voicemail campagn has been sent to all users with a risk score {form.operator.data} {score}!')
+        return redirect(url_for('admin.console'))
+    return render_template('admin/risk_voicemail.html', title='Voicemail Phishing Campaign for Groups by Risk Score', form=form)
+
+@bp.route('/users')
+@login_required
+def users():
+    if not current_user.is_admin:
+        abort(403)
+    users = db.session.query(User).all
+    return render_template('admin/users.html', title='Users', users=users)

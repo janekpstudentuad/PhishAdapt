@@ -5,7 +5,7 @@
     <img src="{{ url_for('static', filename='images/voicemail.png')}}"><br>
     <form action="" method="post">
         {{ form.hidden_tag() }}
-        <p>Please select the Departmental Group you want to send this campaign to: {{ form.department }}</p>    
+        <p>Please specify what level of risk you want to send this campaign to: {{ form.operator }} {{ form.score }}</p>    
         <p>{{ form.send() }}</p>
     </form>
 {% endblock %}
