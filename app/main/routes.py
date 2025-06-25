@@ -3,8 +3,8 @@ from flask import redirect, render_template, url_for, flash, request
 from flask_login import login_required, current_user
 from app import db
 import sqlalchemy as sa
-from app.models import User
-from app.main.forms import EditProfileForm
+from app.models import User, Profile
+from app.main.forms import EditProfileForm, EditTrainingPreferences
 
 @bp.route('/')
 @bp.route('/index')
@@ -15,7 +15,8 @@ def index():
 @login_required
 def user(username):
     user = db.first_or_404(sa.select(User).where(User.username == username))
-    return render_template('user.html', user=user, title='User Profile')
+    profile = db.session.scalar(sa.select(Profile).where(Profile.user_id == user.id))
+    return render_template('user.html', user=user, profile=profile, title='User Profile')
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
@@ -31,3 +32,31 @@ def edit_profile():
         form.firstname.data = current_user.firstname
         form.lastname.data = current_user.lastname
     return render_template('edit_profile.html', title='Edit Profile', form=form, user=user)
+
+@bp.route('/edit_training_preferences', methods=['GET', 'POST'])
+@login_required
+def edit_training_preferences():
+    form = EditTrainingPreferences()
+    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        profile = Profile(user_id=user.id)
+        db.session.add(profile)
+        db.session.commit()
+    if form.validate_on_submit():
+        profile.instructor = form.instructor.data
+        profile.group = form.group.data
+        profile.game = form.game.data
+        profile.elearn = form.elearn.data
+        profile.quiz = form.quiz.data
+        profile.demo = form.demo.data
+        profile.video = form.video.data
+        profile.text = form.text.data
+        profile.visual = form.visual.data
+        profile.coach = form.coach.data
+        profile.audio = form.audio.data
+        
+        db.session.commit()
+        flash('Your training preferences have been saved!')
+        return redirect(url_for('main.user', username=current_user.username))
+    
+    return render_template('edit_training_preferences.html', title='Edit Training Preferences', form=form, profile=profile)

@@ -27,9 +27,34 @@
         <tr>
             <td><p>Email address: {{user.email }}</p></td>
         </tr>
-    </table>
+    </table><br>
+    <a href="{{ url_for('main.edit_profile', username=user.username) }}">Edit profile</a><br>
     <h2>Training preferences</h2>
-    <p>Coming soon!</p>
-    <a href="{{ url_for('main.edit_profile', username=user.username) }}">Edit profile</a>
+    <ul>
+        {% if profile %}
+            {% set prefs = [
+                ('Instructor-led', profile.instructor),
+                ('Group learning', profile.group),
+                ('Game-based', profile.game),
+                ('E-learning', profile.elearn),
+                ('Quiz-based', profile.quiz),
+                ('Demo-based', profile.demo),
+                ('Video-based', profile.video),
+                ('Text-based', profile.text),
+                ('Visual', profile.visual),
+                ('Coach-supported', profile.coach),
+                ('Audio-based', profile.audio)
+            ] %}
+            {% for label, selected in prefs %}
+                {% if selected %}
+                    <li>{{ label }}</li><br>
+                {% endif %}
+            {% endfor %}
+            {% else %}
+                <p>No preferences selected.</p>
+            {% endif %}
+    </ul><br>
+    <a href="{{ url_for('main.edit_training_preferences', username=user.username) }}">Edit training preferences</a><br>
+
 {% endif %}
 {% endblock %}
