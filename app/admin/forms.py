@@ -33,3 +33,26 @@ class SortUsers(FlaskForm):
     score = IntegerField()
     training_preference = SelectField('Training Preference')
     submit = SubmitField('Filter')
+
+class UserSearch(FlaskForm):
+    username = StringField('Username:', validators=[DataRequired()])
+    search = SubmitField('Search')
+
+class EditUser(FlaskForm):
+    username = StringField('Username:', validators=[DataRequired()])
+    firstname = StringField('First Name', validators=[DataRequired()])
+    lastname = StringField('Last Name', validators=[DataRequired()])
+    email = StringField('Email address', validators=[DataRequired(), Email()])
+    jobtitle = StringField('Job Title', validators=[DataRequired()])
+    current_team = StringField('Current Team')
+    new_team = SelectField('New Team', choices = [], validators=[DataRequired()])
+    current_department = StringField('Current Department')
+    new_department = SelectField('New Department', choices = [], validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    isadmin = BooleanField('Admin?')
+    update = SubmitField('Update user')
+
+class DeleteUser(FlaskForm):
+    username = StringField('Username:', validators=[DataRequired()])
+    delete = SubmitField('Delete User')

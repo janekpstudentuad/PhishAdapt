@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Delete user</h1>
+    <p><strong>Deleting users cannot be undone!</strong></p>
+    <p><strong>Please make sure you need to delete the user and that you enter the right username!</strong></p>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label }}
+            {{ form.username(size=32) }}
+        </p>
+        <p>{{ form.delete }}</p>
+    </form>
+{% endblock %}

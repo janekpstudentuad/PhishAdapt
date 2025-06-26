@@ -7,4 +7,10 @@
         <li><a href="{{ url_for('admin.campaigns') }}">Training campaigns</a></li><br>
         <li><a href="{{ url_for('admin.users') }}">Users</a></li><br>
     </ul>
+    <h2>Edit user</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>{{ form.username.label }} {{ form.username }} {{ form.search }}
+    </form>
+    <a href="{{ url_for('admin.delete_user') }}">Delete user</a>
 {% endblock %}
