@@ -10,6 +10,24 @@
             {{ form.submit }}
         </form>
     </p>
+    {% if request.method == 'POST' %}
+        <div class="filter-summary">
+            <p><strong>Filtered by: {{ form.campaign.data }}</strong></p>
+            <table id="admin_table">
+                <tr>
+                    <th>Total emails sent</th>
+                    <th># of users who clicked</th>
+                    <th>Click rate</th>
+                </tr>
+                <tr id="click-table">
+                    <td>{{ total_sent }}</td>
+                    <td>{{ clicked_count }}</td>
+                    <td>{{ click_rate }}%</td>
+                </tr>
+            </table>
+            <p><a href="{{url_for('admin.executed_campaigns') }}" class="reset-button">Reset filters</a></p> 
+        </div>
+    {% endif %}
     <table id="admin_table">
         <tr>
             <th>Campaign name</th>

@@ -48,3 +48,7 @@ body {
 .reset-button:hover {
     background-color: #aaa;
 }
+
+#click-table td {
+    text-align: center;
+}

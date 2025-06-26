@@ -1,9 +1,10 @@
 from flask import render_template, url_for, redirect, flash
 from flask_login import login_required, current_user
 from app.training import bp
-from app.models import User, Profile
+from app.models import User, Profile, CampaignResult
 from app import db
 from app.training.forms import TrainingPreferencesForm
+from app.utils.jwt_tokens import verify_training_token
 
 @bp.route('/content')
 @login_required
@@ -14,9 +15,16 @@ def content():
 def clicked(token):
     if current_user.is_authenticated:
         next_page = url_for('main.user', username=current_user.username)
-    user = User.verify_training_token(token)
+    user_id, campaign_id = verify_training_token(token)
+    if not user_id or not campaign_id:
+        return redirect(url_for('auth.login'))
+    user = db.session.get(User, user_id)
     if not user:
         return redirect(url_for('auth.login'))
+    result = CampaignResult.query.filter_by(user_id=user_id, campaign_id=campaign_id).first()
+    if result and not result.clicked:
+        result.clicked = True
+        db.session.commit()
     form = TrainingPreferencesForm()
     profile = Profile.query.filter_by(user_id=user.id).first()
     if not profile:

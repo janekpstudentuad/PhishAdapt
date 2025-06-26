@@ -77,7 +77,7 @@ def baseline_voicemail():
         db.session.commit()
         users = db.session.query(User).all()
         for user in users:
-            send_voicemail(user)
+            send_voicemail(user, campaign)
             result = CampaignResult(campaign_id=campaign.id, user_id=user.id, username=user.username)
             db.session.add(result)
         db.session.commit()
@@ -107,7 +107,7 @@ def group_voicemail():
         db.session.commit()
         users = db.session.query(User).where(User.department == department).all()
         for user in users:
-            send_voicemail(user)
+            send_voicemail(user, campaign)
             result = CampaignResult(campaign_id=campaign.id, user_id=user.id, username=user.username)
             db.session.add(result)
         db.session.commit()
@@ -131,7 +131,7 @@ def risk_voicemail():
         db.session.commit()       
         users = db.session.query(User).join(Profile).filter(op_func(Profile.risk, score)).all()
         for user in users:
-            send_voicemail(user)
+            send_voicemail(user, campaign)
             result = CampaignResult(campaign_id=campaign.id, user_id=user.id, username=user.username)
             db.session.add(result)
         db.session.commit()
@@ -255,9 +255,15 @@ def executed_campaigns():
         selected_campaign = form.campaign.data
         results_query = results_query.filter(Campaign.name == selected_campaign)
     results = results_query.all()
+    total_sent = results_query.count()
+    clicked_count = results_query.filter(CampaignResult.clicked == True).count()
+    click_rate = (clicked_count / total_sent * 100) if total_sent else 0
     return render_template(
         'admin/executed_campaigns.html',
         title='Executed Campaigns',
         form=form,
-        results=results
+        results=results,
+        total_sent=total_sent,
+        clicked_count=clicked_count,
+        click_rate=round(click_rate, 2)
     )
