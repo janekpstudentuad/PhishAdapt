@@ -1,12 +1,13 @@
 from app.admin import bp
 from flask import render_template, flash, redirect, url_for, abort, request
-from app.admin.forms import RegistrationForm, BaselineCampaign, DepartmentalGroups, RiskGroups, SortUsers, UserSearch, EditUser, DeleteUser
+from app.admin.forms import RegistrationForm, BaselineCampaign, DepartmentalGroups, RiskGroups, FilterUsers, UserSearch, EditUser, DeleteUser, FilterCampaigns
 from flask_login import current_user, login_required
 import sqlalchemy as sa
 from app import db
-from app.models import User, Organisation, Profile
+from app.models import User, Organisation, Profile, Campaign, CampaignResult
 from app.admin.email import send_voicemail
 import operator
+from datetime import datetime
 
 @bp.route('/console', methods=['GET', 'POST'])
 @login_required
@@ -71,9 +72,15 @@ def baseline_voicemail():
         abort(403)
     form = BaselineCampaign()
     if form.validate_on_submit():
+        campaign = Campaign(name=f'Baseline Voicemail {datetime.now().strftime("%d%m%Y")}')
+        db.session.add(campaign)
+        db.session.commit()
         users = db.session.query(User).all()
         for user in users:
             send_voicemail(user)
+            result = CampaignResult(campaign_id=campaign.id, user_id=user.id, username=user.username)
+            db.session.add(result)
+        db.session.commit()
         flash('Baseline voicemail campagn has been sent to all users!')
         return redirect(url_for('admin.console'))
     return render_template('admin/baseline_voicemail.html', title='Baseline Voicemail Campaign', form=form)
@@ -95,9 +102,15 @@ def group_voicemail():
     form.department.choices = [(dept.department, dept.department) for dept in departments]
     if form.validate_on_submit():
         department = form.department.data
+        campaign = Campaign(name=f'Targeted {department} Voicemail {datetime.now().strftime("%d%m%Y")}')
+        db.session.add(campaign)
+        db.session.commit()
         users = db.session.query(User).where(User.department == department).all()
         for user in users:
             send_voicemail(user)
+            result = CampaignResult(campaign_id=campaign.id, user_id=user.id, username=user.username)
+            db.session.add(result)
+        db.session.commit()
         flash(f'Targeted voicemail campagn has been sent to all users in {department}!')
         return redirect(url_for('admin.console'))
     return render_template('admin/group_voicemail.html', title='Voicemail Phishing Campaign for Departmental Groups', form=form)
@@ -111,12 +124,17 @@ def risk_voicemail():
     form.operator.choices = [('>', '>'), ('>=', '>='), ('<', '<'), ('<=', '<='), ('==', '==')]
     if form.validate_on_submit():
         op_map = {'>': operator.gt, '>=': operator.ge, '<': operator.lt, '<=': operator.le, '==': operator.eq}
-
         op_func = op_map[form.operator.data]
-        score = form.score.data        
+        score = form.score.data
+        campaign = Campaign(name=f'Risk Score {form.operator.data} {score} Voicemail {datetime.now().strftime("%d%m%Y")}')
+        db.session.add(campaign)
+        db.session.commit()       
         users = db.session.query(User).join(Profile).filter(op_func(Profile.risk, score)).all()
         for user in users:
             send_voicemail(user)
+            result = CampaignResult(campaign_id=campaign.id, user_id=user.id, username=user.username)
+            db.session.add(result)
+        db.session.commit()
         flash(f'Targeted voicemail campagn has been sent to all users with a risk score {form.operator.data} {score}!')
         return redirect(url_for('admin.console'))
     return render_template('admin/risk_voicemail.html', title='Voicemail Phishing Campaign for Groups by Risk Score', form=form)
@@ -126,7 +144,7 @@ def risk_voicemail():
 def users():
     if not current_user.is_admin:
         abort(403)
-    form = SortUsers()
+    form = FilterUsers()
     departments = db.session.query(Organisation.department).distinct().all()
     form.department.choices = [('All', 'All')] + [(dept.department, dept.department) for dept in departments]
     form.score_operator.choices = [('All', 'All'), ('>', '>'), ('>=', '>='), ('<', '<'), ('<=', '<='), ('==', '==')]
@@ -219,3 +237,27 @@ def delete_user():
         flash(f"User '{username}' and associated profile deleted successfully.", 'success')
         return redirect(url_for('admin.console'))
     return render_template('admin/delete_user.html', title='Delete User', form=form)
+
+@bp.route('/executed_campaigns', methods=['GET', 'POST'])
+@login_required
+def executed_campaigns():
+    if not current_user.is_admin:
+        abort(403)
+    form = FilterCampaigns()
+    campaigns = db.session.query(Campaign.name).distinct().all()
+    form.campaign.choices = [(campaign.name, campaign.name) for campaign in campaigns]
+    results_query = (
+        db.session.query(CampaignResult, Campaign, User)
+        .join(Campaign, CampaignResult.campaign_id == Campaign.id)
+        .join(User, CampaignResult.user_id == User.id)
+    )
+    if form.validate_on_submit():
+        selected_campaign = form.campaign.data
+        results_query = results_query.filter(Campaign.name == selected_campaign)
+    results = results_query.all()
+    return render_template(
+        'admin/executed_campaigns.html',
+        title='Executed Campaigns',
+        form=form,
+        results=results
+    )

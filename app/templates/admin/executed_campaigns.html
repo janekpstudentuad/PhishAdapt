@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Executed campaigns</h1>
+    <p>
+        Filter campaigns by name:
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.campaign }}
+            {{ form.submit }}
+        </form>
+    </p>
+    <table id="admin_table">
+        <tr>
+            <th>Campaign name</th>
+            <th>Username</th>
+            <th>Clicked?</th>
+        </tr>
+        {% for result, campaign, user in results %}
+        <tr>
+            <td>{{ campaign.name }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ 'Yes' if result.clicked else 'No' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

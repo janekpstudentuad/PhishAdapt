@@ -27,7 +27,7 @@ class RiskGroups(FlaskForm):
     score = IntegerField(validators=[DataRequired(), NumberRange(min=0, max=100, message='Enter a value between 0 and 100')])
     send = SubmitField('Send Campaign!')
 
-class SortUsers(FlaskForm):
+class FilterUsers(FlaskForm):
     department = SelectField('Department', choices = [])
     score_operator = SelectField('Risk score', choices = [])
     score = IntegerField()
@@ -56,3 +56,7 @@ class EditUser(FlaskForm):
 class DeleteUser(FlaskForm):
     username = StringField('Username:', validators=[DataRequired()])
     delete = SubmitField('Delete User')
+
+class FilterCampaigns(FlaskForm):
+    campaign = SelectField('Campaign Name', choices=[])
+    submit = SubmitField('Filter')

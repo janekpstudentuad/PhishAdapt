@@ -10,6 +10,8 @@ from time import time
 import jwt
 from flask import current_app
 from sqlalchemy import CheckConstraint
+from datetime import datetime
+from typing import List
 
 class User(UserMixin, db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
@@ -23,6 +25,7 @@ class User(UserMixin, db.Model):
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
     is_admin: so.Mapped[bool] = so.mapped_column(sa.Boolean)
     profile: so.Mapped["Profile"] = relationship(back_populates="user", uselist=False)
+    campaign_results: so.Mapped[List["CampaignResult"]] = relationship(back_populates="user")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -84,3 +87,19 @@ class Profile(db.Model):
     coach: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
     audio: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
     risk: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=True)
+
+class Campaign(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    name: so.Mapped[str] = so.mapped_column(sa.String(128), index=True)
+    sent_at: so.Mapped[datetime] = so.mapped_column(sa.DateTime, default=datetime.now)
+    results: so.Mapped[List["CampaignResult"]] = relationship(back_populates="campaign", cascade="all, delete-orphan")
+
+class CampaignResult(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    campaign_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('campaign.id'), index=True, nullable=False)
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("user.id", name="fk_campaign_result_user_id"), nullable=False)
+    username: so.Mapped[str] = so.mapped_column(sa.String(64), index=True)
+    clicked: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
+
+    campaign: so.Mapped["Campaign"] = relationship(back_populates="results")
+    user: so.Mapped["User"] = relationship(back_populates="campaign_results")
