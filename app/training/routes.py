@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from app.training import bp
 from app.models import User, Profile, CampaignResult
 from app import db
-from app.training.forms import TrainingPreferencesForm
+from app.main.forms import EditProfileForm
 from app.utils.jwt_tokens import verify_training_token
 
 @bp.route('/content')
@@ -25,7 +25,7 @@ def clicked(token):
     if result and not result.clicked:
         result.clicked = True
         db.session.commit()
-    form = TrainingPreferencesForm()
+    form = EditProfileForm()
     profile = Profile.query.filter_by(user_id=user.id).first()
     if not profile:
         profile = Profile(user_id=user.id, risk=10)
@@ -35,17 +35,17 @@ def clicked(token):
     db.session.commit()
     
     if form.validate_on_submit():
-        profile.instructor = form.instructor.data
-        profile.group = form.group.data
+        # profile.instructor = form.instructor.data
+        # profile.group = form.group.data
         profile.game = form.game.data
-        profile.elearn = form.elearn.data
+        # profile.elearn = form.elearn.data
         profile.quiz = form.quiz.data
-        profile.demo = form.demo.data
+        # profile.demo = form.demo.data
         profile.video = form.video.data
         profile.text = form.text.data
-        profile.visual = form.visual.data
-        profile.coach = form.coach.data
-        profile.audio = form.audio.data
+        # profile.visual = form.visual.data
+        # profile.coach = form.coach.data
+        # profile.audio = form.audio.data
         
         db.session.commit()
         flash('Your training preferences have been saved!')

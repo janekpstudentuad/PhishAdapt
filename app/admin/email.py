@@ -7,5 +7,10 @@ def send_voicemail(user, campaign):
     send_email(f'Voicemail for {user.username}',
                sender='voicemail@company.com',
                recipients=[user.email],
-               # text_body=render_template('email/reset_password.txt', user=user, token=token),
                html_body=render_template('email/baseline_voicemail.html', user=user, token=token))
+
+def send_training_invitation(user):
+    send_email(f'"Training recommendations for {user.username}',
+    sender='voicemail@company.com',
+    recipients=[user.email],
+    html_body=render_template('email/training_invite.html', user=user))

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Send training invitations</h1>
+    <p>
+        Select campaign to send training invitations for:
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.campaign }}
+            {{ form.send }}
+        </form>
+    </p>
+{% endblock %}

@@ -71,20 +71,27 @@ def edit_training_preferences():
         db.session.add(profile)
         db.session.commit()
     if form.validate_on_submit():
-        profile.instructor = form.instructor.data
-        profile.group = form.group.data
+        # profile.instructor = form.instructor.data
+        # profile.group = form.group.data
         profile.game = form.game.data
-        profile.elearn = form.elearn.data
+        # profile.elearn = form.elearn.data
         profile.quiz = form.quiz.data
-        profile.demo = form.demo.data
+        # profile.demo = form.demo.data
         profile.video = form.video.data
         profile.text = form.text.data
-        profile.visual = form.visual.data
-        profile.coach = form.coach.data
-        profile.audio = form.audio.data
+        # profile.visual = form.visual.data
+        # profile.coach = form.coach.data
+        # profile.audio = form.audio.data
         
         db.session.commit()
         flash('Your training preferences have been saved!')
         return redirect(url_for('main.user', username=current_user.username))
     
     return render_template('edit_training_preferences.html', title='Edit Training Preferences', form=form, profile=profile)
+
+@bp.route('/user/<username>/personalised_training')
+@login_required
+def personalised_training(username):
+    user = db.first_or_404(sa.select(User).where(User.username == username))
+    profile = Profile.query.filter_by(user_id=user.id).first()
+    return render_template('personalised_training.html', user=user, title='Personalised training recommendations', profile=profile)

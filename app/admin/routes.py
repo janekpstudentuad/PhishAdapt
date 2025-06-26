@@ -5,9 +5,10 @@ from flask_login import current_user, login_required
 import sqlalchemy as sa
 from app import db
 from app.models import User, Organisation, Profile, Campaign, CampaignResult
-from app.admin.email import send_voicemail
+from app.admin.email import send_voicemail, send_training_invitation
 import operator
 from datetime import datetime
+from sqlalchemy import func
 
 @bp.route('/console', methods=['GET', 'POST'])
 @login_required
@@ -285,3 +286,38 @@ def reset_user_password():
         flash(f"The password for '{username}' has been changed!")
         return redirect(url_for('admin.console'))
     return render_template('admin/reset_user_password.html', title='Reset User password', form=form)
+
+@bp.route('/training_invitations', methods=['GET', 'POST'])
+@login_required
+def training_invitation():
+    if not current_user.is_admin:
+        abort(403)
+    form = FilterCampaigns()
+    subquery = (
+        db.session.query(
+            Campaign.name,
+            func.max(Campaign.id).label("latest_id")
+        )
+        .group_by(Campaign.name)
+        .subquery()
+    )
+    campaigns = (
+        db.session.query(Campaign)
+        .join(subquery, Campaign.id == subquery.c.latest_id)
+        .all()
+    )
+    form.campaign.choices = [(str(c.id), c.name) for c in campaigns]
+    if form.validate_on_submit():
+        selected_campaign_id = int(form.campaign.data)
+        campaign_results = (
+            db.session.query(CampaignResult)
+            .filter(CampaignResult.campaign_id == selected_campaign_id)
+            .filter(CampaignResult.clicked.is_(True))
+            .all()
+        )
+        users_to_email = [result.user for result in campaign_results]
+        for user in users_to_email:
+            send_training_invitation(user)
+        flash(f"{len(users_to_email)} training invitations sent.")
+        return redirect(url_for('admin.console'))
+    return render_template('admin/training_invitation.html', title='Send training invitations', form=form)

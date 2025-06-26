@@ -60,6 +60,7 @@ class DeleteUser(FlaskForm):
 class FilterCampaigns(FlaskForm):
     campaign = SelectField('Campaign Name', choices=[])
     submit = SubmitField('Filter')
+    send = SubmitField('Send')
 
 class ResetUserPassword(FlaskForm):
     username = StringField('Username:', validators=[DataRequired()])
