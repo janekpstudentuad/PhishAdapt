@@ -60,3 +60,9 @@ class DeleteUser(FlaskForm):
 class FilterCampaigns(FlaskForm):
     campaign = SelectField('Campaign Name', choices=[])
     submit = SubmitField('Filter')
+
+class ResetUserPassword(FlaskForm):
+    username = StringField('Username:', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    update = SubmitField('Update password')

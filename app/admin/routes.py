@@ -1,6 +1,6 @@
 from app.admin import bp
 from flask import render_template, flash, redirect, url_for, abort, request
-from app.admin.forms import RegistrationForm, BaselineCampaign, DepartmentalGroups, RiskGroups, FilterUsers, UserSearch, EditUser, DeleteUser, FilterCampaigns
+from app.admin.forms import RegistrationForm, BaselineCampaign, DepartmentalGroups, RiskGroups, FilterUsers, UserSearch, EditUser, DeleteUser, FilterCampaigns, ResetUserPassword
 from flask_login import current_user, login_required
 import sqlalchemy as sa
 from app import db
@@ -267,3 +267,21 @@ def executed_campaigns():
         clicked_count=clicked_count,
         click_rate=round(click_rate, 2)
     )
+
+@bp.route('/reset_user_password', methods=['GET', 'POST'])
+@login_required
+def reset_user_password():
+    if not current_user.is_admin:
+        abort(403)
+    form = ResetUserPassword()
+    if form.validate_on_submit():
+        username = form.username.data.strip()
+        user = db.session.query(User).filter_by(username=username).first()
+        if not user:
+            flash(f'User {username} not found.', 'warning')
+            return redirect(url_for('admin.console'))
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash(f"The password for '{username}' has been changed!")
+        return redirect(url_for('admin.console'))
+    return render_template('admin/reset_user_password.html', title='Reset User password', form=form)
