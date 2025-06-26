@@ -1,6 +1,6 @@
 from app.admin import bp
-from flask import render_template, flash, redirect, url_for, abort
-from app.admin.forms import RegistrationForm, BaselineCampaign, DepartmentalGroups, RiskGroups
+from flask import render_template, flash, redirect, url_for, abort, request
+from app.admin.forms import RegistrationForm, BaselineCampaign, DepartmentalGroups, RiskGroups, SortUsers
 from flask_login import current_user, login_required
 import sqlalchemy as sa
 from app import db
@@ -106,13 +106,7 @@ def risk_voicemail():
     form=RiskGroups()
     form.operator.choices = [('>', '>'), ('>=', '>='), ('<', '<'), ('<=', '<='), ('==', '==')]
     if form.validate_on_submit():
-        op_map = {
-            '>': operator.gt,
-            '>=': operator.ge,
-            '<': operator.lt,
-            '<=': operator.le,
-            '==': operator.eq
-        }
+        op_map = {'>': operator.gt, '>=': operator.ge, '<': operator.lt, '<=': operator.le, '==': operator.eq}
 
         op_func = op_map[form.operator.data]
         score = form.score.data
@@ -124,10 +118,47 @@ def risk_voicemail():
         return redirect(url_for('admin.console'))
     return render_template('admin/risk_voicemail.html', title='Voicemail Phishing Campaign for Groups by Risk Score', form=form)
 
-@bp.route('/users')
+@bp.route('/users', methods=['GET', 'POST'])
 @login_required
 def users():
     if not current_user.is_admin:
         abort(403)
-    users = db.session.query(User).all
-    return render_template('admin/users.html', title='Users', users=users)
+    form = SortUsers()
+    departments = db.session.query(Organisation.department).distinct().all()
+    form.department.choices = [('All', 'All')] + [(dept.department, dept.department) for dept in departments]
+    form.score_operator.choices = [('All', 'All'), ('>', '>'), ('>=', '>='), ('<', '<'), ('<=', '<='), ('==', '==')]
+    preference_choices = [
+        ('instructor', 'Instructor-led'),
+        ('group', 'Group-based'),
+        ('game', 'Games'),
+        ('elearn', 'e-Learning'),
+        ('quiz', 'Quizzes'),
+        ('demo', 'Demonstration'),
+        ('video', 'Video'),
+        ('text', 'Articles'),
+        ('visual', 'Visual-based'),
+        ('coach', 'Coaching'),
+        ('audio', 'Audio-based')
+    ]
+    form.training_preference.choices = [('All', 'All')] + preference_choices
+
+    query = db.session.query(User).join(Profile)
+
+    if request.method == 'POST':
+        if form.department.data != 'All':
+            query = query.filter(User.department == form.department.data)
+        
+        if form.score_operator.data != 'All' and form.score.data is not None:
+            op_map = {'>': operator.gt, '>=': operator.ge, '<': operator.lt, '<=': operator.le, '==': operator.eq}
+            query = query.filter(op_map[form.score_operator.data](Profile.risk, form.score.data))
+        
+        if form.training_preference.data != 'All':
+            pref_field = getattr(Profile, form.training_preference.data, None)
+            if pref_field is not None:
+                query = query.filter(pref_field == True)
+                
+        users = query.all()
+    else:
+        users = query.all()
+        
+    return render_template('admin/users.html', title='Users', users=users, form=form)

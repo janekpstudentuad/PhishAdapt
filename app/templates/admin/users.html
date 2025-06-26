@@ -2,6 +2,27 @@
 
 {% block content %}
     <h1>Users</h1>
+    <p>
+        Filter users by: 
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.department.label }} {{ form.department }}
+            {{ form.score_operator.label }} {{ form.score_operator }} {{ form.score }}
+            {{ form.training_preference.label }} {{ form.training_preference }}
+            {{ form.submit }}
+        </form>
+    </p>
+    {% if request.method == 'POST' %}
+        <div class="filter-summary">
+            <p><strong>Filtered by:</strong></p>
+            <ul>
+                <li>Department: {{ form.department.data }}</li>
+                <li>Risk Score: {{ form.score_operator.data }} {{ form.score.data or "" }}</li>
+                <li>Training Preference: {{ form.training_preference.data }}</li>
+            </ul>
+            <p><a href="{{url_for('admin.users') }}" class="reset-button">Reset filters</a></p> 
+        </div>
+    {% endif %}
     <table id="user_table">
         <tr>
             <th>Username</th>
@@ -15,6 +36,37 @@
         {% for user in users %}
         <tr>
             <td>{{ user.username }}</td>
+            <td>{{ user.firstname }}</td>
+            <td>{{ user.lastname }}</td>
+            <td>{{ user.team }}</td>
+            <td>{{ user.department }}</td>
+            <td>
+                {% if user.profile %}
+                    {{ user.profile.risk }}
+                {% else %}
+                    N/A    
+                {% endif %}
+            </td>
+            <td>
+                {% if user.profile %}
+                    <ul>
+                        {% if user.profile.instructor %}<li>Instructor-led</li>{% endif %}
+                        {% if user.profile.group %}<li>Group-based</li>{% endif %}
+                        {% if user.profile.game %}<li>Games</li>{% endif %}
+                        {% if user.profile.elearn %}<li>e-Learning</li>{% endif %}
+                        {% if user.profile.quiz %}<li>Quizzes</li>{% endif %}
+                        {% if user.profile.demo %}<li>Demonstration</li>{% endif %}
+                        {% if user.profile.video %}<li>Videos</li>{% endif %}
+                        {% if user.profile.text %}<li>Articles</li>{% endif %}
+                        {% if user.profile.visual %}<li>Visual-based</li>{% endif %}
+                        {% if user.profile.coach %}<li>Coaching</li>{% endif %}
+                        {% if user.profile.audio %}<li>Audio-based</li>{% endif %}
+                    </ul>
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            
         </tr>
         {% endfor %}
     </table>

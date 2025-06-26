@@ -26,3 +26,10 @@ class RiskGroups(FlaskForm):
     operator = SelectField(choices = [], validators=[DataRequired()])
     score = IntegerField(validators=[DataRequired(), NumberRange(min=0, max=100, message='Enter a value between 0 and 100')])
     send = SubmitField('Send Campaign!')
+
+class SortUsers(FlaskForm):
+    department = SelectField('Department', choices = [])
+    score_operator = SelectField('Risk score', choices = [])
+    score = IntegerField()
+    training_preference = SelectField('Training Preference')
+    submit = SubmitField('Filter')

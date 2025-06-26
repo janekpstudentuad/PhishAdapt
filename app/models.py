@@ -1,6 +1,7 @@
 from app import db, login
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from sqlalchemy.orm import relationship
 from typing import Optional
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -21,6 +22,7 @@ class User(UserMixin, db.Model):
     department: so.Mapped[str] = so.mapped_column(sa.String(32), index=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
     is_admin: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+    profile: so.Mapped["Profile"] = relationship(back_populates="user", uselist=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -69,6 +71,7 @@ class Organisation(db.Model):
 class Profile(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True, unique=True)
+    user: so.Mapped["User"] = relationship(back_populates="profile")
     instructor: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
     group: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
     game: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
@@ -81,7 +84,3 @@ class Profile(db.Model):
     coach: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
     audio: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=True)
     risk: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=True)
-
-    # __table_args__ = (
-    #     CheckConstraint('risk >= 0 AND risk <= 100', name='check_risk_range'),
-    # )
