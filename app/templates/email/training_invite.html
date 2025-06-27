@@ -2,8 +2,27 @@
 <html>
     <body>
         <p>Dear {{user.firstname }},</p>
-        <p>Please navigate to your user profile to receive your personalised training recommendations.</p>
-        <a href="{{ url_for('main.user', username=user.username, _external=True)}}">User profile</a>
+        <p>Looking for all of our training material? <a href="{{ url_for('training.content') }}">Click here.</a></p>
+        {% if profile %}
+        {% if profile.game %}
+            <h2>Game-based training</h2>
+            <p>Coming soon!</p>
+        {% endif %}
+        {% if profile.quiz %}
+            <h2>Quizzes</h2>
+            <p>Coming soon!</p>
+        {% endif %}
+        {% if profile.video %}
+            <h2>Videos</h2>
+            <p>Coming soon!</p>
+        {% endif %}
+        {% if profile.text %}
+            <h2>Articles</h2>
+            <p>Coming soon!</p>
+        {% endif %}
+    {% else %}
+        <p>No preferences selected.</p>
+    {% endif %}
         <p>Sincerely,</p>
         <p>Morphin and the PhishAdapt Team</p>
     </body>
