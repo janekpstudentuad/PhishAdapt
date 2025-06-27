@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from app.training import bp
 from app.models import User, Profile, CampaignResult
 from app import db
-from app.main.forms import EditProfileForm
+from app.main.forms import EditTrainingPreferences
 from app.utils.jwt_tokens import verify_training_token
 
 @bp.route('/content')
@@ -25,8 +25,8 @@ def clicked(token):
     if result and not result.clicked:
         result.clicked = True
         db.session.commit()
-    form = EditProfileForm()
     profile = Profile.query.filter_by(user_id=user.id).first()
+    form = EditTrainingPreferences(obj=profile)
     if not profile:
         profile = Profile(user_id=user.id, risk=10)
         db.session.add(profile)

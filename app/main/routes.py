@@ -64,8 +64,8 @@ def edit_profile():
 @bp.route('/edit_training_preferences', methods=['GET', 'POST'])
 @login_required
 def edit_training_preferences():
-    form = EditTrainingPreferences()
     profile = Profile.query.filter_by(user_id=current_user.id).first()
+    form = EditTrainingPreferences(obj=profile)
     if not profile:
         profile = Profile(user_id=current_user.id)
         db.session.add(profile)

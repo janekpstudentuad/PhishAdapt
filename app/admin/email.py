@@ -12,7 +12,7 @@ def send_voicemail(user, campaign):
 
 def send_training_invitation(user):
     profile = Profile.query.filter_by(user_id=user.id).first()
-    send_email(f'"Training recommendations for {user.username}',
+    send_email(f'Training recommendations for {user.username}',
     sender='voicemail@company.com',
     recipients=[user.email],
     html_body=render_template('email/training_invite.html', user=user, profile=profile))
