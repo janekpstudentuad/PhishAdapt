@@ -25,8 +25,8 @@ def clicked(token):
     if result and not result.clicked:
         result.clicked = True
         db.session.commit()
+    form = EditTrainingPreferences()
     profile = Profile.query.filter_by(user_id=user.id).first()
-    form = EditTrainingPreferences(obj=profile)
     if not profile:
         profile = Profile(user_id=user.id, risk=10)
         db.session.add(profile)
