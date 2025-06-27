@@ -1,0 +1,55 @@
+<p>Looking for all of our training material? <a href="{{ url_for('training.content') }}">Click here.</a></p>
+
+{% if profile %}
+    {% set pref_count = 0 %}
+    {% if profile.game %}{% set pref_count = pref_count + 1 %}{% endif %}
+    {% if profile.quiz %}{% set pref_count = pref_count + 1 %}{% endif %}
+    {% if profile.video %}{% set pref_count = pref_count + 1 %}{% endif %}
+    {% if profile.text %}{% set pref_count = pref_count + 1 %}{% endif %}
+
+    {% if pref_count == 0 %}
+        <p>It doesn't look like you've set any training preferences. You can set them from your profile <a href="{{ url_for('main.edit_profile') }}">here.</a></p>
+        <p>For now, why not get started with the videos below?</p>
+        <p><a href="https://www.youtube.com/watch?v=dKoRUFIwlfM" target="_blank">How to Identify and Avoid Phishing Scams</a></p>
+        <p><a href="https://www.youtube.com/watch?v=nEb5umERTbM&t=32s" target="_blank">Phishing: 3 Tips</a></p><br>
+        {% else %}
+        {% if profile.game %}
+            <h2>Game-based training</h2>
+            <h3>Gone Phishing</h3>
+            <p>You will become "James Ferguson", an elderly war veteran who must distinguish which emails in his inbox can be trusted and which are phishing attempts. James can explore his environment to find clues that point to the legitimacy of these emails.</p>
+            <p>The goal is to clear the inbox by answering legitimate emails and ignoring phishing emails, all within a two-minutes timeframe. Good luck!</p>
+            <a href="https://lynsay.itch.io/gone-phishing" target="_blank">Gone Phishing</a><br>
+        {% endif %}
+
+        {% if profile.quiz %}
+            <h2>Quizzes</h2>
+            <h3>Phishing Quiz by Google</h3>
+            <p>Can you spot when you're being phished? Think you can tell what's real or fake?</p>
+            <p><a href="https://phishingquiz.withgoogle.com/" target="_blank">Google Phishing Quiz</a></p><br>
+        {% endif %}
+
+        {% if profile.video %}
+            <h2>Videos</h2>
+            <h3>Klik Solutions - How to Identify and Avoid Phishing Scams</h3>
+            <p>In this video, we break down how phishing works, the red flags to watch for, and the best ways to protect yourself. Learn how to spot fake emails, avoid falling for scams, and what to do if you've clicked a phishing link.</p>
+            <p>Length: approx. 3 minutes</p>
+            <p><a href="https://www.youtube.com/watch?v=dKoRUFIwlfM" target="_blank">How to Identify and Avoid Phishing Scams</a></p>
+
+            <h3>Cofense - Phishing: 3 Tips</h3>
+            <p>A short video with three actionable tips for spotting phishing.</p>
+            <p>Length: approx 1 minute</p>
+            <p><a href="https://www.youtube.com/watch?v=nEb5umERTbM&t=32s" target="_blank">Phishing: 3 Tips</a></p><br>
+        {% endif %}
+
+        {% if profile.text %}
+            <h2>Articles</h2>
+            <p><a href="https://www.ncsc.gov.uk/collection/phishing-scams" target="_blank">Phishing: Spot and report scam emails, texts, websites and calls (NCSC)</a></p>
+            <p><a href="https://www.crowdstrike.com/en-us/cybersecurity-101/social-engineering/how-to-spot-a-phishing-email/" target="_blank">How to Spot a Phishing Email (Crowdstrike)</a></p><br>
+        {% endif %}
+    {% endif %}
+{% else %}
+    <p>We couldn't find a training profile for you. Please <a href="{{ url_for('main.user', username=user.username, _external=True) }}">visit your profile</a> to set your preferences.</p>
+    <p>For now, why not get started with the videos below?</p>
+    <p><a href="https://www.youtube.com/watch?v=dKoRUFIwlfM" target="_blank">How to Identify and Avoid Phishing Scams</a></p>
+    <p><a href="https://www.youtube.com/watch?v=nEb5umERTbM&t=32s" target="_blank">Phishing: 3 Tips</a></p><br>
+{% endif %}

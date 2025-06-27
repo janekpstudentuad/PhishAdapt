@@ -3,4 +3,5 @@ venv
 *.log
 pip-log.txt
 app.db
-migrations/
+/migrations/*
+/__pycache__/*
