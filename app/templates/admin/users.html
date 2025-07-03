@@ -1,9 +1,11 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
     <h1>Users</h1>
     <p>
         Filter users by: 
+        <!-- Display form for accepting filter values -->
         <form method="POST">
             {{ form.hidden_tag() }}
             {{ form.department.label }} {{ form.department }}
@@ -12,6 +14,7 @@
             {{ form.submit }}
         </form>
     </p>
+    <!-- Display list of matching results if filters applied using submit button -->
     {% if request.method == 'POST' %}
         <div class="filter-summary">
             <p><strong>Filtered by:</strong></p>
@@ -20,9 +23,11 @@
                 <li>Risk Score: {{ form.score_operator.data }} {{ form.score.data or "" }}</li>
                 <li>Training Preference: {{ form.training_preference.data }}</li>
             </ul>
+            <!-- Display button for resetting filters -->
             <p><a href="{{url_for('admin.users') }}" class="reset-button">Reset filters</a></p> 
         </div>
     {% endif %}
+    <!-- Display table with all users if request to page made with GET -->
     <table id="admin_table">
         <tr>
             <th>Username</th>
@@ -48,6 +53,7 @@
                 {% endif %}
             </td>
             <td>
+                <!-- Column with user training preferences -->
                 {% if user.profile %}
                     <ul>
                         {% if user.profile.instructor %}<li>Instructor-led</li>{% endif %}

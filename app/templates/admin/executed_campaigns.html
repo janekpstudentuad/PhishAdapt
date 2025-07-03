@@ -1,20 +1,24 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
     <h1>Executed campaigns</h1>
     <p>
         Filter campaigns by name:
+        <!-- Display form for accepting filter values -->
         <form method="POST">
             {{ form.hidden_tag() }}
             {{ form.campaign }}
             {{ form.submit }}
         </form>
     </p>
+    <!-- Display list of matching results if filters applied using submit button -->
     {% if request.method == 'POST' %}
         <div class="filter-summary">
             <p><strong>Filtered by: {{ form.campaign.data }}</strong></p>
             <table id="admin_table">
                 <tr>
+                    <!-- Display table with campaign statistics -->
                     <th>Total emails sent</th>
                     <th># of users who clicked</th>
                     <th>Click rate</th>
@@ -25,15 +29,18 @@
                     <td>{{ click_rate }}%</td>
                 </tr>
             </table>
+            <!-- Display button for resetting filters -->
             <p><a href="{{url_for('admin.executed_campaigns') }}" class="reset-button">Reset filters</a></p> 
         </div>
     {% endif %}
+    <!-- Display table with all users if request to page made with GET -->
     <table id="admin_table">
         <tr>
             <th>Campaign name</th>
             <th>Username</th>
             <th>Clicked?</th>
         </tr>
+        <!-- Column with yes/no display for user "clicked" result -->
         {% for result, campaign, user in results %}
         <tr>
             <td>{{ campaign.name }}</td>

@@ -1,3 +1,4 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
@@ -12,6 +13,7 @@
     <p>
         We would like to offer some training that could help. Please could you let us know which of the following you would find most useful:
     </p>
+    <!-- Inherit content from child template -->
     {% include '_training_preferences.html' %}
     <p>You can choose as many of the training options as you want, or just stick with one if you prefer. You can even access all of the training material from our <a href="{{ url_for('training.content') }}">Training Content page, at any time.</a></p>
     <p>Once you're happy with your choices, hit the <strong>"Submit"</strong> button above, and we'll take care of the rest! And if you change your mind, you can change your preferences at any time from your PhishAdapt profile page.</p>

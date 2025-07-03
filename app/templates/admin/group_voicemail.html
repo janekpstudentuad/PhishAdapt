@@ -1,8 +1,12 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
+    <!-- Inherit content from child template -->
     {% include 'admin/_preview.html' %}
+    <!-- Display preview of training campaign email -->
     <img src="{{ url_for('static', filename='images/voicemail.png')}}"><br>
+    <!-- Display form for running training campaign  -->
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>Please select the Departmental Group you want to send this campaign to: {{ form.department }}</p>    

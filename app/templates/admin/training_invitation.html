@@ -1,9 +1,11 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
     <h1>Send training invitations</h1>
     <p>
         Select campaign to send training invitations for:
+        <!-- Display form for sending training invitations -->
         <form method="POST">
             {{ form.hidden_tag() }}
             {{ form.campaign }}

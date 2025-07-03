@@ -1,9 +1,11 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
     <h1>Delete user</h1>
     <p><strong>Deleting users cannot be undone!</strong></p>
     <p><strong>Please make sure you need to delete the user and that you enter the right username!</strong></p>
+    <!-- Display form to take username input for user deletion -->
     <form method="POST">
         {{ form.hidden_tag() }}
         <p>

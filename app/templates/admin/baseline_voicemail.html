@@ -1,8 +1,13 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
+    <!-- Inherit content from preview header child template -->
     {% include 'admin/_preview.html' %}
+    <!-- Inherit content from send to all users warning child template -->
     {% include 'admin/_baseline_warning.html' %}
+    <!-- Display form for running training campaign  -->
     <img src="{{ url_for('static', filename='images/voicemail.png')}}"><br>
+    <!-- Inherit content from child template with form to run campaign -->
     {% include 'admin/_baseline_send.html' %}
 {% endblock %}

@@ -1,6 +1,8 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
     <h1>Training recommendations for {{ user.username }}</h1>
+    <!-- Inherit content from child template -->
     {% include '_personalised_training.html' %}
 {% endblock %}

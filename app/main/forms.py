@@ -1,12 +1,15 @@
+# Import required libraries
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField
 from wtforms.validators import Length
 
+# Form for user edit profile functionality
 class EditProfileForm(FlaskForm):
     firstname = StringField('First name', validators=[Length(min=0, max=16)])
     lastname = StringField('Last name', validators=[Length(min=0, max=16)])
     submit = SubmitField('Submit')
 
+# Form for user edit training preferences functionality
 class EditTrainingPreferences(FlaskForm):
     instructor = BooleanField('Tick here to add Instructor-led training to your training preferences: ')
     group = BooleanField('Tick here to add Group-based training to your training preferences: ')

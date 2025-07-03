@@ -1,7 +1,9 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
     <div class="center-container">
+            <!-- Display PhishAdapt error logo -->
             <img src="{{ url_for('static', filename='images/Sad logo.png')}}"><br>
             <h1>An unexpected error has occurred</h1>
             <p>The administrator has been notified. Sorry for the inconvenience!</p>

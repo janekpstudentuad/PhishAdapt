@@ -1,7 +1,10 @@
 <p>Looking for all of our training material? <a href="{{ url_for('training.content') }}">Click here.</a></p>
 
+<!-- Check if user profile variable set and passed to template -->
 {% if profile %}
+    <!-- Set temporary variable for returning content if no preferences set -->
     {% set pref_count = 0 %}
+    <!-- Set temporary variable to provide else conditional evaluation statement -->
     {% if profile.game %}{% set pref_count = pref_count + 1 %}{% endif %}
     {% if profile.quiz %}{% set pref_count = pref_count + 1 %}{% endif %}
     {% if profile.video %}{% set pref_count = pref_count + 1 %}{% endif %}
@@ -47,6 +50,7 @@
             <p><a href="https://www.crowdstrike.com/en-us/cybersecurity-101/social-engineering/how-to-spot-a-phishing-email/" target="_blank">How to Spot a Phishing Email (Crowdstrike)</a></p><br>
         {% endif %}
     {% endif %}
+<!-- Return standard text if no profile found -->
 {% else %}
     <p>We couldn't find a training profile for you. Please <a href="{{ url_for('main.user', username=user.username, _external=True) }}">visit your profile</a> to set your preferences.</p>
     <p>For now, why not get started with the videos below?</p>

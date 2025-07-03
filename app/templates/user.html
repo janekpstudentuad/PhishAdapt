@@ -1,6 +1,8 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Check to make sure that profile page being accessed belongs to logged-in user -->
 {% if not user == current_user %}
     <h1>Access denied!</h1>
 {% else %}

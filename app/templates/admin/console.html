@@ -1,7 +1,9 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
     <h1>Admin console</h1>
+    <!-- List with links to admin functions -->
     <ul>
         <li><a href="{{ url_for('admin.register') }}">Register new user</a></li><br>
         <li><a href="{{ url_for('admin.reset_user_password') }}">Reset user password</a></li><br>
@@ -11,6 +13,7 @@
         <li><a href="{{ url_for('admin.training_invitation') }}">Send training invitations</a></li><br>
     </ul>
     <h2>Edit user</h2>
+    <!-- Form for search for editing user functionality -->
     <form method="POST">
         {{ form.hidden_tag() }}
         <p>{{ form.username.label }} {{ form.username }} {{ form.search }}</p>

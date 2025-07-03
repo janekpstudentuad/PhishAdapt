@@ -1,7 +1,9 @@
+<!-- Inherit content from base template -->
 {% extends "base.html" %}
 
 {% block content %}
     <div class="center-container">
+            <!-- Display PhishAdapt error logo -->
             <img src="{{ url_for('static', filename='images/Sad logo.png')}}"><br>
             <h1>Page not found</h1>
             <p><a href="{{ url_for('main.index') }}">User Home</a></p>

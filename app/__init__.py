@@ -1,5 +1,6 @@
-from flask import Flask, current_app
-import os
+# Import libraries
+from flask import Flask
+import os # For use with logging
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -8,22 +9,32 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_mail import Mail
 
+# Instantiate DB class and migration config
 db = SQLAlchemy()
 migrate = Migrate()
+
+# Instantiate login class and set class methods
 login = LoginManager()
 login.login_view = 'auth.login'
 login.login_message = 'Please log in to access this page.'
+
+# Instantiate mail class
 mail = Mail()
 
+# Main web application function
 def create_app(config_class=Config):
+    # Instantiate web application class instance
     app = Flask(__name__)
+    # Set configuration options for class
     app.config.from_object(config_class)
 
+    # Initialise classes
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)
     mail.init_app(app)
 
+    # Register blueprints with web application
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
@@ -39,6 +50,7 @@ def create_app(config_class=Config):
     from app.training import bp as training_bp
     app.register_blueprint(training_bp, url_prefix='/training')
     
+    # Set error logging to email administrators when web app not in debug mode
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
             auth = None
@@ -56,6 +68,7 @@ def create_app(config_class=Config):
             mail_handler.setLevel(logging.ERROR)
             app.logger.addHandler(mail_handler)
 
+        # Create logs folder if it doesn't already exist
         if not os.path.exists('logs'):
             os.mkdir('logs')
         file_handler = RotatingFileHandler('logs/phishadapt.log', maxBytes=10240, backupCount=10)
@@ -65,9 +78,10 @@ def create_app(config_class=Config):
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
 
+        # Set logger default logging level to INFO
         app.logger.setLevel(logging.INFO)
+
+        # Set default text for logger log entries
         app.logger.info('PhishAdapt startup')
 
     return app
-
-from app import models
