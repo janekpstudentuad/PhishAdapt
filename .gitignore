@@ -4,4 +4,4 @@
 pip-log.txt
 app.db
 /migrations/*
-/__pycache__/*
+*/__pycache__/*
