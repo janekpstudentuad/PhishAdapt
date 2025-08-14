@@ -121,6 +121,7 @@ phishadapt/
 │   ├── __init__.py
 │   ├── email.py
 │   └── models.py
+```
 
 ## Screenshots
 
