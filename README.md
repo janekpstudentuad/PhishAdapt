@@ -103,6 +103,25 @@ flask run
 
 The app will be available at http://localhost:5000
 
+## Project Structure
+
+```bash
+
+phishadapt/
+│
+├── app/                    # Main app
+│   ├── admin/              # Blueprints for administration functions
+│   ├── auth/               # Blueprints for authentication functions
+│   ├── errors/             # Blueprints for error functions
+│   ├── main/               # Main Flask app
+│   ├── static/             # Static files (CSS, JS)
+│   ├── templates/          # HTML templates
+│   ├── training/           # Blueprints for training functions
+│   ├── utils/              # Supporting utilities
+│   ├── __init__.py
+│   ├── email.py
+│   └── models.py
+
 ## Screenshots
 
 ### Login page
