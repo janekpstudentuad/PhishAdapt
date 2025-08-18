@@ -223,7 +223,7 @@ def users():
         ('audio', 'Audio-based')
     ]
     form.training_preference.choices = [('All', 'All')] + preference_choices
-    # Query db to get profile info dor user
+    # Query db to get profile info for user
     query = db.session.query(User).join(Profile)
     # Apply filters set to user list if submit button used to make request to route
     if request.method == 'POST':
@@ -288,7 +288,7 @@ def baseline_voicemail():
             db.session.add(result)
         db.session.commit()
         # Display info message on completion
-        flash('Baseline voicemail campagn has been sent to all users!')
+        flash('Baseline voicemail campaign has been sent to all users!')
         # Redirect to main admin console page on completion
         return redirect(url_for('admin.console'))
     # Render baseline voicemail campaign page if request contains no form data
@@ -332,7 +332,7 @@ def group_voicemail():
             db.session.add(result)
         db.session.commit()
         # Display info message on completion
-        flash(f'Targeted voicemail campagn has been sent to all users in {department}!')
+        flash(f'Targeted voicemail campaign has been sent to all users in {department}!')
         # Redirect to main admin console page on completion
         return redirect(url_for('admin.console'))
     # Render targeted voicemail campaign page if request contains no form data
@@ -370,7 +370,7 @@ def risk_voicemail():
             db.session.add(result)
         db.session.commit()
         # Display info message on completion
-        flash(f'Targeted voicemail campagn has been sent to all users with a risk score {form.operator.data} {score}!')
+        flash(f'Targeted voicemail campaign has been sent to all users with a risk score {form.operator.data} {score}!')
         # Redirect to main admin console page on completion
         return redirect(url_for('admin.console'))
     # Render targeted voicemail campaign page if request contains no form data
@@ -383,7 +383,7 @@ def executed_campaigns():
     # Check if logged-in user is registered as an admin and return 403 (Forbidden) error message if not
     if not current_user.is_admin:
         abort(403)
-    # Instatiate form for filtering campaign list
+    # Instantiate form for filtering campaign list
     form = FilterCampaigns()
     # Generate options for dropdown campaigns list and set to form field
     campaigns = db.session.query(Campaign.name).distinct().all()
