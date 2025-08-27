@@ -2,7 +2,7 @@
 from app.training import bp
 
 # Import required libraries
-from flask import render_template, url_for, redirect, flash
+from flask import render_template, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 
 # Import classes from other functions
@@ -39,28 +39,29 @@ def clicked(token):
         return redirect(url_for('auth.login'))
     # Query db to find campaign details
     result = CampaignResult.query.filter_by(user_id=user_id, campaign_id=campaign_id).first()
-    # Set data in "clicked" column of campaign results table to True for user
-    # and bump risk ONLY when arriving via GET AND this is the first time clicked.
-    if request.method == 'GET' and result and not result.clicked:
+
+    # Track if this is the first time the user has clicked this campaign link
+    first_click = False
+    if result and not result.clicked:
         result.clicked = True
+        db.session.flush()  # don't commit yet; we'll commit with risk update
+        first_click = True
 
-    # Select profile from db
+    # Select profile from db (no risk change yet)
     profile = Profile.query.filter_by(user_id=user.id).first()
 
-    # Create profile entry in db for user if one does not already exist and set initial risk score
-    if not profile:
-        profile = Profile(user_id=user.id, risk=10)
-        db.session.add(profile)
-    # Increase user risk score if profile already exists, cannot exceed 100
-    else:
-        profile.risk = min((profile.risk or 0) + 10, 100)
+    # Only bump risk on the first actual click *and* only on GET (landing view)
+    if request.method == 'GET' and first_click:
+        if not profile:
+            profile = Profile(user_id=user.id, risk=10)
+            db.session.add(profile)
+        else:
+            profile.risk = min((profile.risk or 0) + 10, 100)
+        db.session.commit()
 
-    db.session.commit()
-
-    # Ensure a profile exists for form binding (no risk change here)
-    profile = Profile.query.filter_by(user_id=user.id).first()
+    # Make sure a profile exists so the form can bind (no risk change here)
     if not profile:
-        profile = Profile(user_id=user.id, risk=0)  # do NOT bump risk here
+        profile = Profile(user_id=user.id, risk=0)
         db.session.add(profile)
         db.session.commit()
 
