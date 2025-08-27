@@ -40,21 +40,32 @@ def clicked(token):
     # Query db to find campaign details
     result = CampaignResult.query.filter_by(user_id=user_id, campaign_id=campaign_id).first()
     # Set data in "clicked" column of campaign results table to True for user
-    if result and not result.clicked:
+    # and bump risk ONLY when arriving via GET AND this is the first time clicked.
+    if request.method == 'GET' and result and not result.clicked:
         result.clicked = True
-        db.session.commit()
-    # Instantiate edit training preferences form
-    form = EditTrainingPreferences()
+
     # Select profile from db
     profile = Profile.query.filter_by(user_id=user.id).first()
+
     # Create profile entry in db for user if one does not already exist and set initial risk score
     if not profile:
         profile = Profile(user_id=user.id, risk=10)
         db.session.add(profile)
     # Increase user risk score if profile already exists, cannot exceed 100
     else:
-        profile.risk = min(profile.risk + 10, 100)
+        profile.risk = min((profile.risk or 0) + 10, 100)
+
     db.session.commit()
+
+    # Ensure a profile exists for form binding (no risk change here)
+    profile = Profile.query.filter_by(user_id=user.id).first()
+    if not profile:
+        profile = Profile(user_id=user.id, risk=0)  # do NOT bump risk here
+        db.session.add(profile)
+        db.session.commit()
+
+    # Instantiate edit training preferences form
+    form = EditTrainingPreferences()
     
     # Set user training preferences as per form input if request to page submitted includes a completed form
     if form.validate_on_submit():
