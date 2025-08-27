@@ -7,6 +7,7 @@ from flask_login import current_user, login_required
 import operator
 from datetime import datetime
 from sqlalchemy import func
+from sqlalchemy.exc import SQLAlchemyError
 
 # Import required forms
 from app.admin.forms import UserSearch, RegistrationForm, ResetUserPassword, EditUser, DeleteUser, BaselineCampaign, DepartmentalGroups, RiskGroups, FilterUsers, FilterCampaigns
@@ -160,38 +161,44 @@ def edit_user(target):
     # Render admin edit user page if request is made via user search function
     return render_template('admin/target_edit.html', title=f'Edit User {user.username}', form=form, user=user)
 
-# Blueprint route for delete user functionality
 @bp.route('/delete_user', methods=['GET', 'POST'])
 @login_required
 def delete_user():
-    # Check if logged-in user is registered as an admin and return 403 (Forbidden) error message if not
     if not current_user.is_admin:
         abort(403)
-    # Instantiate admin delete user form
+
     form = DeleteUser()
     if form.validate_on_submit():
-        # Format user input from form
         username = form.username.data.strip()
-        # Set provided user name as variable
         user = db.session.query(User).filter_by(username=username).first()
-        # Display error message if user not found in user db
+
         if not user:
             flash(f'User {username} not found.', 'warning')
-            # Redirect to admin console
-            return redirect(url_for('admin.console'))        
-        # Set profile information if user name valid
-        profile = db.session.query(Profile).filter_by(user_id=user.id).first()
-        # Delete profile if it exists
-        if profile:
-            db.session.delete(profile)
-        # Delete user and commit db changes
-        db.session.delete(user)
-        db.session.commit()
-        # Display info message on completion
-        flash(f"User '{username}' and associated profile deleted successfully.", 'success')
-        # Redirect to admin console page
-        return redirect(url_for('admin.console'))
-    # Render admin delete user page if request contains no form data
+            return redirect(url_for('admin.console'))
+
+        try:
+            # Delete related rows first to satisfy FK constraints
+            # 1) Profile
+            profile = db.session.query(Profile).filter_by(user_id=user.id).first()
+            if profile:
+                db.session.delete(profile)
+
+            # 2) Campaign results (all rows for this user)
+            db.session.query(CampaignResult).filter_by(user_id=user.id).delete(synchronize_session=False)
+
+            # 3) Finally delete the user
+            db.session.delete(user)
+            db.session.commit()
+
+            flash(f"User '{username}' and associated data deleted successfully.", 'success')
+            return redirect(url_for('admin.console'))
+
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash("Could not delete user due to database constraints. See logs for details.", "danger")
+            # optionally log e
+            return redirect(url_for('admin.console'))
+
     return render_template('admin/delete_user.html', title='Delete User', form=form)
 
 # Blueprint route for displaying list of users and associated profile information
